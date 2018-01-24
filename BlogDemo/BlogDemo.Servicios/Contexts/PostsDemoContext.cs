@@ -17,17 +17,29 @@ namespace BlogDemo.Servicios.Contexts
 
         public bool ActivarPost(Post p)
         {
-            throw new NotImplementedException();
+            var activatePost = Posts.First(g => g.PostId == p.PostId);
+            activatePost.Activo = true;
+            SaveChanges();
+            return true;
         }
 
         public Post ActualizarPost(Post p)
         {
-            throw new NotImplementedException();
+            // Busca el objeto dentro del entity framework y reemplaza los valores
+            Set<Post>().Attach(p);
+            // Cambia el estado del objeto en entity framework a modificado
+            Entry(p).State = EntityState.Modified;
+            // Guarda los cambios.
+            SaveChanges();
+            return p;
         }
 
         public bool DesactivarPost(Post p)
         {
-            throw new NotImplementedException();
+            var activatePost = Posts.First(g => g.PostId == p.PostId);
+            activatePost.Activo = false;
+            SaveChanges();
+            return true;
         }
 
         public Post GuardarPost(Post p)
@@ -39,7 +51,7 @@ namespace BlogDemo.Servicios.Contexts
 
         public List<Post> LeerPost()
         {
-            throw new NotImplementedException();
+            return Posts.ToList();
         }
     }
 }

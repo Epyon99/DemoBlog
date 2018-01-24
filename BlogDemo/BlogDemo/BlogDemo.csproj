@@ -153,6 +153,9 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\PostCreateView.cs" />
+    <Compile Include="Models\PostDeactiveView.cs" />
+    <Compile Include="Models\PostReadView.cs" />
+    <Compile Include="Models\PostUpdateView.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -192,6 +195,9 @@
     <Content Include="Views\Posts\Crear.cshtml" />
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Posts\VerTodos.cshtml" />
+    <Content Include="Views\Posts\Update.cshtml" />
+    <Content Include="Views\Posts\Desactivar.cshtml" />
+    <Content Include="Views\Posts\Detalle.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

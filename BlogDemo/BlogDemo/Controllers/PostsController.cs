@@ -60,13 +60,32 @@ namespace BlogDemo.Controllers
         [HttpGet]
         public ActionResult Update(Guid id)
         {
-            return null;
+            var post = service.Leer().First(g => g.PostId == id);
+            var puv = new PostUpdateView()
+            {
+                Id = post.PostId,
+                Texto = post.Texto,
+                Tipo = post.PostType,
+                Titulo = post.Titulo
+            };
+            return View(puv);
         }
 
         [HttpPost]
-        public ActionResult Update(Guid id, Post post)
+        public ActionResult Update(Guid id, PostUpdateView post)
         {
-            return null;
+            if (ModelState.IsValid)
+            {
+                Post postForService = new Post()
+                {
+                    PostId = post.Id,
+                    Titulo = post.Titulo,
+                    Texto = post.Texto,
+                    PostType = post.Tipo
+                };
+                service.Update(postForService);
+            }
+            return View(post);
         }
 
 
@@ -74,21 +93,42 @@ namespace BlogDemo.Controllers
         [HttpGet]
         public ActionResult Desactivar(Guid id = default(Guid), string nombre = default(string))
         {
-            return null;
+            var post = service.Leer().FirstOrDefault(g => g.PostId == id || g.Titulo == nombre);
+            PostDeactiveView pdv = new PostDeactiveView()
+            {
+                Id = post.PostId,
+                Message = $"Desea desactivar este Post: {post.Titulo} del autor: {post.Autor}"
+            };
+            return View(pdv);
         }
 
-        [HttpGet]
+        [HttpPost]
         [ActionName("Desactivar")]
-        public ActionResult DesactivarPost(Post post)
+        public ActionResult DesactivarPost(PostDeactiveView post)
         {
-            return null;
+            if (post.Id != null)
+            {
+                Post p = new Post { PostId = post.Id };
+                service.Desactivar(p);
+            }
+            return RedirectToAction("VerTodos");
         }
 
         //TODO: Ver 1 Post
         [HttpGet]
         public ActionResult Detalle(Guid id = default(Guid), string nombre = default(string))
         {
-            return null;
+            var post = service.Leer().FirstOrDefault(g => g.PostId == id || g.Titulo == nombre);
+            PostReadView prv = new PostReadView()
+            {
+                Id = post.PostId,
+                Autor = post.Autor,
+                Actualizacion = post.FechaModificacion != null ? post.FechaModificacion : post.FechaCreacion,
+                Texto = post.Texto,
+                Tipo = post.PostType,
+                Titulo = post.Titulo
+            };
+            return View(prv);
         }
 
         //TODO: Buscar
@@ -114,7 +154,7 @@ namespace BlogDemo.Controllers
             }
 
             // TODO: Retornar una coleccion Posts
-            return View(service.Leer().ToList());
+            return View(service.Leer().Where(g=>g.Activo).ToList());
         }
 
         //TODO: Paginas

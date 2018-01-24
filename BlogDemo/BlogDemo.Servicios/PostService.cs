@@ -2,6 +2,7 @@
 using BlogDemo.Servicios.Contexts;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -48,41 +49,42 @@ namespace BlogDemo.Servicios
 
         public Post Update (Post post)
         {
-            //var updatePost = context.Posts.FirstOrDefault(g => g.PostId == post.PostId);
-            //updatePost.Copiar(post);
+            var updatePost = context.LeerPost().FirstOrDefault(g => g.PostId == post.PostId);
+            updatePost.Copiar(post);
 
-            //if (updatePost.Autor == null && post.Titulo == null)
-            //{
-            //    throw new Exception("Se necesita un Titulo y un Autor ");
-            //}
-            //updatePost.FechaModificacion = new DateTime().ToShortDateString();
-            //updatePost.Modificaciones++;
+            if (updatePost.Autor == null && post.Titulo == null)
+            {
+                throw new Exception("Se necesita un Titulo y un Autor ");
+            }
+            updatePost.FechaModificacion = new DateTime().ToShortDateString();
+            updatePost.Modificaciones++;
 
-            //try
-            //{
-            //    context.SaveChanges();
-            //}
-            //catch (Exception)
-            //{
-            //    throw;
-            //}
+            try
+            {
+                context.ActualizarPost(updatePost);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
 
-            //return updatePost;
-            return post;
+            return updatePost;
         }
 
         public bool Desactivar (Post post)
         {
-            //var updatePost = context.Posts.FirstOrDefault(g => g.PostId == post.PostId);
-            //updatePost.Activo = false;
-            //try
-            //{
-            //    context.SaveChanges();
-            //}
-            //catch (Exception)
-            //{
-            //    throw;
-            //}
+            var postToDelete = context.LeerPost().FirstOrDefault(g => g.PostId == post.PostId);
+            postToDelete.Activo = false;
+            try
+            {
+                context.DesactivarPost(postToDelete);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception somewhere
+                Trace.WriteLine(ex.Message + ex.StackTrace);
+                return false;
+            }
             return true;
         }
 
@@ -103,8 +105,14 @@ namespace BlogDemo.Servicios
 
         public List<Post> Leer()
         {
-            //return context.Posts.ToList();
-            return null;
+            return context.LeerPost();
+        }
+
+        public List<Post> Paginar(int pagina, int numeroElementoPorPagina)
+        {
+            var objetos = context.LeerPost();
+            objetos = objetos.Skip(pagina-1 * numeroElementoPorPagina).ToList();
+            return objetos.Take(numeroElementoPorPagina).ToList();
         }
     }
 }

@@ -1,0 +1,13 @@
+﻿@model BlogDemo.Models.PostDeactiveView
+
+@{
+    ViewBag.Title = "Desactivar";
+}
+
+<h2>Desactivar</h2>
+@using (Html.BeginForm())
+{
+    @Html.HiddenFor(g => g.Id)
+    @Html.DisplayFor(g => g.Message)
+    <input type="submit" />
+}
